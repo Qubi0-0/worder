@@ -1,43 +1,80 @@
 use super::Component;
 use crossterm::event::{KeyCode, KeyEvent, KeyEventKind};
-use ratatui::{prelude::Color, prelude::*, widgets::*};
+use ratatui::{prelude::*, widgets::*};
 use std::io;
 
 pub struct LeftPanel {
-    counter: i32,
+    pub input: String,
+    pub status: String,
+    pub submitted_word: Option<String>,
+    pub focused: bool,
     pub fg_color: Color,
 }
 
 impl LeftPanel {
     pub fn new(fg_color: Color) -> Self {
         Self {
-            counter: 0,
-            fg_color: fg_color,
+            input: String::new(),
+            status: String::from("Wpisz słowo po niemiecku i naciśnij Enter"),
+            submitted_word: None,
+            focused: false,
+            fg_color,
         }
     }
 }
 
 impl Component for LeftPanel {
     fn render(&mut self, frame: &mut Frame, area: Rect) {
-        let block = Block::bordered()
-            .title("Left Panel")
+        let outer_block = Block::bordered()
+            .title("Nowe słowo")
             .border_style(Style::default().fg(self.fg_color));
-        // take user imput
-        let mut input: String = String::new();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Unable to read Stdin");
-        let text = format!("Counter: {}\nPress +/- to change", self.counter);
-        let paragraph = Paragraph::new(text).block(block);
+        let inner = outer_block.inner(area);
+        frame.render_widget(outer_block, area);
 
-        frame.render_widget(paragraph, area);
+        let chunks = Layout::vertical([Constraint::Length(3), Constraint::Min(1)]).split(inner);
+
+        // Pole tekstowe
+        let input_block = Block::bordered()
+            .title("Słowo (DE)")
+            .border_style(Style::default().fg(Color::White));
+        let input_paragraph = Paragraph::new(self.input.as_str()).block(input_block);
+        frame.render_widget(input_paragraph, chunks[0]);
+
+        // Kursor
+        if self.focused {
+            frame.set_cursor_position(Position::new(
+                chunks[0].x + self.input.len() as u16 + 1,
+                chunks[0].y + 1,
+            ));
+        }
+
+        // Status
+        let status_block = Block::bordered()
+            .title("Status")
+            .border_style(Style::default().fg(Color::DarkGray));
+        let status_paragraph = Paragraph::new(self.status.as_str())
+            .block(status_block)
+            .wrap(Wrap { trim: true });
+        frame.render_widget(status_paragraph, chunks[1]);
     }
 
     fn handle_key_event(&mut self, key: KeyEvent) -> io::Result<()> {
         if key.kind == KeyEventKind::Press {
             match key.code {
-                KeyCode::Char('+') => self.counter += 1,
-                KeyCode::Char('-') => self.counter -= 1,
+                KeyCode::Char(c) => {
+                    self.input.push(c);
+                }
+                KeyCode::Backspace => {
+                    self.input.pop();
+                }
+                KeyCode::Enter => {
+                    if !self.input.is_empty() {
+                        self.submitted_word = Some(self.input.drain(..).collect());
+                    }
+                }
+                KeyCode::Esc => {
+                    self.input.clear();
+                }
                 _ => {}
             }
         }

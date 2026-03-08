@@ -15,7 +15,7 @@ impl StatusBar {
 
 impl Component for StatusBar {
     fn render(&mut self, frame: &mut Frame, area: Rect) {
-        let instructions = "Press <Q> to Quit | Press <Tab> to change focus to next tab | Press <Shitf + Tab> to change focus to prev tab";
+        let instructions = "<Q> Wyjdź | <Tab/Shift+Tab> Zmień panel | <Enter> Tłumacz | <↑↓> Nawiguj | <D> Usuń wpis";
         let block = Block::bordered()
             .title("Status Bar")
             .border_style(Style::default().fg(self.fg_color));

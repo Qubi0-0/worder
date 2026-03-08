@@ -1,6 +1,8 @@
 mod app;
 mod components;
+mod dictionary;
 mod events;
+mod translator;
 mod ui;
 
 use app::App;
