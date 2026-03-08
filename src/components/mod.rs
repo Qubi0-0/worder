@@ -21,7 +21,7 @@ impl FocusedColor {
     pub fn to_color(&self) -> Color {
         match self {
             FocusedColor::Focused => Color::LightCyan,
-            FocusedColor::Unfocused => Color::LightBlue,
+            FocusedColor::Unfocused => Color::Gray,
         }
     }
 }
