@@ -20,7 +20,7 @@ pub enum FocusedColor {
 impl FocusedColor {
     pub fn to_color(&self) -> Color {
         match self {
-            FocusedColor::Focused => Color::Cyan,
+            FocusedColor::Focused => Color::LightCyan,
             FocusedColor::Unfocused => Color::LightBlue,
         }
     }

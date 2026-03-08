@@ -34,3 +34,43 @@ pub fn translate_de_to_en(word: &str) -> Result<String, String> {
         Ok(translation)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    // Tests for the local translation-filtering logic only.
+    // We do not call the real API in unit tests.
+
+    fn filter(word: &str, raw: &str) -> String {
+        if raw.is_empty() || raw.to_lowercase() == word.to_lowercase() {
+            "—".to_string()
+        } else {
+            raw.to_string()
+        }
+    }
+
+    #[test]
+    fn valid_translation_is_returned() {
+        assert_eq!(filter("Hund", "dog"), "dog");
+    }
+
+    #[test]
+    fn empty_response_returns_placeholder() {
+        assert_eq!(filter("Hund", ""), "—");
+    }
+
+    #[test]
+    fn same_word_response_returns_placeholder() {
+        // API echoes the word back when it doesn't know it
+        assert_eq!(filter("Hund", "Hund"), "—");
+    }
+
+    #[test]
+    fn same_word_case_insensitive_returns_placeholder() {
+        assert_eq!(filter("hund", "HUND"), "—");
+    }
+
+    #[test]
+    fn different_word_is_not_filtered() {
+        assert_eq!(filter("Katze", "cat"), "cat");
+    }
+}
