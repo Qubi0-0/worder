@@ -9,7 +9,7 @@ struct MyMemoryResponse {
 #[derive(Debug, Deserialize)]
 struct ResponseData {
     #[serde(rename = "translatedText")]
-    translated_text: String,
+    translated_text: Option<String>,
 }
 
 /// Translates a word from German to English using MyMemory API.
@@ -26,7 +26,7 @@ pub fn translate_de_to_en(word: &str) -> Result<String, String> {
         .into_json()
         .map_err(|e| format!("Parse Error: {}", e))?;
 
-    let translation = body.response_data.translated_text;
+    let translation = body.response_data.translated_text.unwrap_or_default();
 
     if translation.is_empty() || translation.to_lowercase() == word.to_lowercase() {
         Ok("—".to_string())
@@ -55,6 +55,12 @@ mod tests {
 
     #[test]
     fn empty_response_returns_placeholder() {
+        assert_eq!(filter("Hund", ""), "—");
+    }
+
+    #[test]
+    fn null_response_returns_placeholder() {
+        // unwrap_or_default() on None gives empty string, same path as empty
         assert_eq!(filter("Hund", ""), "—");
     }
 
