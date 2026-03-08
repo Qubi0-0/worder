@@ -9,7 +9,9 @@ use std::path::PathBuf;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FocusedPanel {
+    #[allow(dead_code)]
     TitleBar,
+    #[allow(dead_code)]
     StatusBar,
     Left,
     Right,
