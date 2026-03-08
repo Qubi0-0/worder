@@ -34,7 +34,7 @@ impl Component for RightPanel {
             })
             .collect();
 
-        let title = format!("Słownik ({} słów)", self.entries.len());
+        let title = format!("Dictionary ({} words)", self.entries.len());
         let list = List::new(items)
             .block(
                 Block::bordered()

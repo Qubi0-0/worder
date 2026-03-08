@@ -30,6 +30,10 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
         FocusedPanel::Right => app.right_panel.fg_color = FocusedColor::Focused.to_color(),
     }
 
+    if app.focused_panel != FocusedPanel::Right {
+        app.right_panel.list_state.select(None);
+    }
+
     app.title_bar.render(frame, title_area);
     app.status_bar.render(frame, status_area);
     app.left_panel.render(frame, left_area);

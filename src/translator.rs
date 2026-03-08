@@ -29,7 +29,7 @@ pub fn translate_de_to_en(word: &str) -> Result<String, String> {
     let translation = body.response_data.translated_text;
 
     if translation.is_empty() || translation.to_lowercase() == word.to_lowercase() {
-        Err(format!("No translation found for '{}'", word))
+        Ok("—".to_string())
     } else {
         Ok(translation)
     }

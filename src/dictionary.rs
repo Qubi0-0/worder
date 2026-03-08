@@ -38,7 +38,7 @@ impl Dictionary {
     }
 
     pub fn add_entry(&mut self, german: String, translation: String) {
-        // Jeśli słowo już istnieje, nadpisz tłumaczenie
+        // If the word already exists, overwrite the translation
         if let Some(entry) = self
             .entries
             .iter_mut()

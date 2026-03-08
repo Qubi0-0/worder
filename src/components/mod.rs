@@ -1,5 +1,5 @@
 use crossterm::event::KeyEvent;
-use ratatui::{prelude::*, Frame};
+use ratatui::{Frame, prelude::*};
 use std::io;
 
 pub mod left_panel;

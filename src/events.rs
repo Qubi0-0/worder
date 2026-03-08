@@ -9,14 +9,14 @@ pub fn handle_event(app: &mut App, key: KeyEvent) -> io::Result<()> {
         return Ok(());
     }
 
-    // Ctrl+C zawsze kończy
+    // Ctrl+C always quits
     if key.code == KeyCode::Char('c') && key.modifiers.contains(KeyModifiers::CONTROL) {
         app.exit = true;
         return Ok(());
     }
 
     match key.code {
-        // 'q' kończy tylko gdy NIE wpisujemy tekst w lewym panelu
+        // 'q' quits only when NOT typing in the left panel
         KeyCode::Char('q') if app.focused_panel != FocusedPanel::Left => {
             app.exit = true;
             return Ok(());
@@ -35,14 +35,18 @@ pub fn handle_event(app: &mut App, key: KeyEvent) -> io::Result<()> {
     match app.focused_panel {
         FocusedPanel::Left => {
             app.left_panel.handle_key_event(key)?;
-            // Sprawdź czy słowo zostało zatwierdzone (Enter)
+            // Check if a word was submitted (Enter)
             if let Some(word) = app.left_panel.submitted_word.take() {
-                app.left_panel.status = format!("Tłumaczenie '{}' ...", word);
+                app.left_panel.status = format!("Translating '{}' ...", word);
                 match translator::translate_de_to_en(&word) {
                     Ok(translation) => {
                         app.dictionary.add_entry(word.clone(), translation.clone());
                         if let Err(e) = app.dictionary.save() {
-                            app.left_panel.status = format!("✗ Błąd zapisu: {}", e);
+                            app.left_panel.status = format!("✗ Save error: {}", e);
+                        } else if translation == "—" {
+                            app.left_panel.status =
+                                format!("⚠ No translation for '{}', saved for manual entry", word);
+                            app.right_panel.entries = app.dictionary.entries.clone();
                         } else {
                             app.left_panel.status = format!("✓ {} → {}", word, translation);
                             app.right_panel.entries = app.dictionary.entries.clone();
@@ -56,14 +60,14 @@ pub fn handle_event(app: &mut App, key: KeyEvent) -> io::Result<()> {
         }
         FocusedPanel::Right => {
             app.right_panel.handle_key_event(key)?;
-            // Sprawdź czy wpis został usunięty
+            // Check if input was deleted
             if let Some(index) = app.right_panel.deleted_index.take() {
                 app.dictionary.remove_entry(index);
                 if let Err(e) = app.dictionary.save() {
-                    app.left_panel.status = format!("✗ Błąd zapisu: {}", e);
+                    app.left_panel.status = format!("✗ Save error: {}", e);
                 } else {
                     app.right_panel.entries = app.dictionary.entries.clone();
-                    app.left_panel.status = "Usunięto wpis".to_string();
+                    app.left_panel.status = "Entry deleted".to_string();
                     if app.right_panel.entries.is_empty() {
                         app.right_panel.list_state.select(None);
                     } else if index >= app.right_panel.entries.len() {
