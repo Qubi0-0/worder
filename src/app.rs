@@ -45,19 +45,15 @@ impl App {
 
     pub fn next_panel(&mut self) {
         self.focused_panel = match self.focused_panel {
-            FocusedPanel::TitleBar => FocusedPanel::Left,
             FocusedPanel::Left => FocusedPanel::Right,
-            FocusedPanel::Right => FocusedPanel::StatusBar,
-            FocusedPanel::StatusBar => FocusedPanel::TitleBar,
+            _ => FocusedPanel::Left,
         };
     }
 
     pub fn prev_panel(&mut self) {
         self.focused_panel = match self.focused_panel {
-            FocusedPanel::TitleBar => FocusedPanel::StatusBar,
-            FocusedPanel::StatusBar => FocusedPanel::Right,
             FocusedPanel::Right => FocusedPanel::Left,
-            FocusedPanel::Left => FocusedPanel::TitleBar,
+            _ => FocusedPanel::Right,
         };
     }
 
