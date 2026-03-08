@@ -9,6 +9,28 @@ pub fn handle_event(app: &mut App, key: KeyEvent) -> io::Result<()> {
         return Ok(());
     }
 
+    // Handle export clear confirmation dialog
+    if app.awaiting_clear_confirm {
+        match key.code {
+            KeyCode::Char('y') | KeyCode::Char('Y') => {
+                app.awaiting_clear_confirm = false;
+                app.dictionary.entries.clear();
+                if let Err(e) = app.dictionary.save() {
+                    app.left_panel.status = format!("✗ Save error: {}", e);
+                } else {
+                    app.right_panel.entries.clear();
+                    app.right_panel.list_state.select(None);
+                    app.left_panel.status = "✓ Exported & cleared".to_string();
+                }
+            }
+            KeyCode::Char('n') | KeyCode::Char('N') | KeyCode::Esc => {
+                app.awaiting_clear_confirm = false;
+            }
+            _ => {}
+        }
+        return Ok(());
+    }
+
     // Ctrl+C always quits
     if key.code == KeyCode::Char('c') && key.modifiers.contains(KeyModifiers::CONTROL) {
         app.exit = true;
@@ -81,7 +103,10 @@ pub fn handle_event(app: &mut App, key: KeyEvent) -> io::Result<()> {
             if app.right_panel.export_requested {
                 app.right_panel.export_requested = false;
                 match app.dictionary.export_json() {
-                    Ok(()) => app.left_panel.status = "✓ Exported to out/".to_string(),
+                    Ok(path) => {
+                        app.left_panel.status = format!("✓ Exported to {}", path);
+                        app.awaiting_clear_confirm = true;
+                    }
                     Err(e) => app.left_panel.status = format!("✗ Export error: {}", e),
                 }
             }

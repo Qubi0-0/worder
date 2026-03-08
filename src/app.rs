@@ -21,6 +21,7 @@ pub struct App {
     pub exit: bool,
     pub focused_panel: FocusedPanel,
     pub dictionary: Dictionary,
+    pub awaiting_clear_confirm: bool,
 
     pub title_bar: TitleBar,
     pub status_bar: StatusBar,
@@ -38,6 +39,7 @@ impl App {
             exit: false,
             focused_panel: FocusedPanel::Left,
             dictionary,
+            awaiting_clear_confirm: false,
             title_bar: TitleBar::new(FocusedColor::Unfocused.to_color()),
             status_bar: StatusBar::new(FocusedColor::Unfocused.to_color()),
             left_panel: LeftPanel::new(FocusedColor::Unfocused.to_color()),

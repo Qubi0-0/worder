@@ -4,7 +4,9 @@ use crate::components::FocusedColor;
 
 use ratatui::{
     Frame,
-    layout::{Constraint::*, Layout},
+    layout::{Alignment, Constraint::*, Layout, Rect},
+    style::{Color, Style},
+    widgets::{Block, Clear, Paragraph},
 };
 
 pub fn draw(app: &mut App, frame: &mut Frame) {
@@ -38,4 +40,30 @@ pub fn draw(app: &mut App, frame: &mut Frame) {
     app.status_bar.render(frame, status_area);
     app.left_panel.render(frame, left_area);
     app.right_panel.render(frame, right_area);
+
+    if app.awaiting_clear_confirm {
+        let popup = centered_popup(60, 5, frame.area());
+        frame.render_widget(Clear, popup);
+        frame.render_widget(
+            Paragraph::new("\n\n[y] Yes  [n] No")
+                .block(
+                    Block::bordered()
+                        .title(" Do you want to remove all entries? ")
+                        .border_style(Style::default().fg(Color::Yellow)),
+                )
+                .alignment(Alignment::Center),
+            popup,
+        );
+    }
+}
+
+fn centered_popup(width_pct: u16, height: u16, area: Rect) -> Rect {
+    let side = (100 - width_pct) / 2;
+    let vert = Layout::vertical([Min(0), Length(height), Min(0)]).split(area);
+    Layout::horizontal([
+        Percentage(side),
+        Percentage(100 - side * 2),
+        Percentage(side),
+    ])
+    .split(vert[1])[1]
 }

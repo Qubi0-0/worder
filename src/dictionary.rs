@@ -37,13 +37,23 @@ impl Dictionary {
         Ok(())
     }
 
-    pub fn export_json(&self) -> std::io::Result<()> {
+    pub fn export_json_to(&self, path: &str) -> std::io::Result<()> {
         let data = serde_json::to_string_pretty(self)?;
-        let date = Utc::now().format("%Y-%m-%d_%H-%M-%S");
-        fs::create_dir_all("out")?;
-        let target = format!("out/{}_exported.json", date);
-        fs::write(target, data)?;
+        if let Some(parent) = std::path::Path::new(path).parent()
+            && parent != std::path::Path::new("")
+        {
+            fs::create_dir_all(parent)?;
+        }
+
+        fs::write(path, data)?;
         Ok(())
+    }
+
+    pub fn export_json(&self) -> std::io::Result<String> {
+        let date = Utc::now().format("%Y-%m-%d_%H-%M-%S");
+        let target = format!("out/{}_exported.json", date);
+        self.export_json_to(&target)?;
+        Ok(target)
     }
 
     pub fn add_entry(&mut self, german: String, translation: String) {
@@ -123,6 +133,65 @@ mod tests {
         dict.add_entry("Hund".into(), "dog".into());
         dict.remove_entry(0);
         assert!(dict.entries.is_empty());
+    }
+
+    #[test]
+    fn export_creates_file_with_correct_content() {
+        let mut dict = empty_dict();
+        dict.add_entry("Baum".into(), "tree".into());
+        dict.add_entry("Haus".into(), "house".into());
+
+        let out_path = std::env::temp_dir().join("worder_test_export.json");
+        dict.export_json_to(out_path.to_str().unwrap())
+            .expect("export failed");
+
+        assert!(out_path.exists());
+        let content = fs::read_to_string(&out_path).expect("read failed");
+        let parsed: Dictionary = serde_json::from_str(&content).expect("invalid JSON");
+        assert_eq!(parsed.entries.len(), 2);
+        assert_eq!(parsed.entries[0].german, "Baum");
+        assert_eq!(parsed.entries[0].translation, "tree");
+        assert_eq!(parsed.entries[1].german, "Haus");
+        assert_eq!(parsed.entries[1].translation, "house");
+
+        fs::remove_file(out_path).ok();
+    }
+
+    #[test]
+    fn export_empty_dict_produces_valid_json() {
+        let dict = empty_dict();
+        let out_path = std::env::temp_dir().join("worder_test_export_empty.json");
+        dict.export_json_to(out_path.to_str().unwrap())
+            .expect("export failed");
+
+        let content = fs::read_to_string(&out_path).expect("read failed");
+        let parsed: serde_json::Value = serde_json::from_str(&content).expect("invalid JSON");
+        assert!(parsed["entries"].as_array().unwrap().is_empty());
+
+        fs::remove_file(out_path).ok();
+    }
+
+    #[test]
+    fn export_creates_parent_directory() {
+        let out_path = std::env::temp_dir()
+            .join("worder_test_export_subdir")
+            .join("export.json");
+        let dict = empty_dict();
+        dict.export_json_to(out_path.to_str().unwrap())
+            .expect("export failed");
+
+        assert!(out_path.exists());
+        fs::remove_file(&out_path).ok();
+        fs::remove_dir(out_path.parent().unwrap()).ok();
+    }
+
+    #[test]
+    fn export_json_returns_path_with_timestamp() {
+        let dict = empty_dict();
+        let path = dict.export_json().expect("export failed");
+        assert!(path.starts_with("out/"));
+        assert!(path.ends_with("_exported.json"));
+        fs::remove_file(&path).ok();
     }
 
     #[test]
