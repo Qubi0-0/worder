@@ -17,6 +17,9 @@ The app also lets you remove entries and always loads the file on startup.
 - **[serde](https://serde.rs/) + serde_json** — JSON serialization for the dictionary file
 - **[MyMemory API](https://mymemory.translated.net/)** — free translation API, no key needed
 
+### Preview 
+![alt text](img/image.png)
+
 ### Running
 ```bash
 cargo run

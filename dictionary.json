@@ -1,3 +1,20 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "german": "Hund ",
+      "translation": "Dog"
+    },
+    {
+      "german": "Wasser",
+      "translation": "Water"
+    },
+    {
+      "german": "Polen",
+      "translation": "Poland"
+    },
+    {
+      "german": "Deutschland",
+      "translation": "Germany"
+    }
+  ]
 }
