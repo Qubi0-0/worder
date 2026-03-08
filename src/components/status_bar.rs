@@ -15,7 +15,7 @@ impl StatusBar {
 
 impl Component for StatusBar {
     fn render(&mut self, frame: &mut Frame, area: Rect) {
-        let instructions = "<Q> Quit | <Tab/Shift+Tab> Switch Panel | <Enter> Translate | <↑↓> Navigate | <D> Delete Entry";
+        let instructions = "<Q> Quit | <Tab/Shift+Tab> Switch Panel | <Enter> Translate | <↑↓> Navigate | <D> Delete Entry | <E> Export";
         let block = Block::bordered()
             .title("Status Bar")
             .border_style(Style::default().fg(self.fg_color));

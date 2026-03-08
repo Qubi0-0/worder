@@ -1,20 +1,56 @@
 {
   "entries": [
     {
-      "german": "Hund ",
-      "translation": "Dog"
+      "german": "aufpassen",
+      "translation": "watch out"
     },
     {
-      "german": "Wasser",
-      "translation": "Water"
+      "german": "antschalngt",
+      "translation": "—"
     },
     {
-      "german": "Polen",
-      "translation": "Poland"
+      "german": "reicht",
+      "translation": "is enough"
     },
     {
-      "german": "Deutschland",
-      "translation": "Germany"
+      "german": "durchzuspielen",
+      "translation": "Thought experiments to play with the options"
+    },
+    {
+      "german": "schlag",
+      "translation": "est"
+    },
+    {
+      "german": "anchlagt",
+      "translation": "—"
+    },
+    {
+      "german": "anchlangt",
+      "translation": "—"
+    },
+    {
+      "german": "schlecht",
+      "translation": "poorly"
+    },
+    {
+      "german": "gar",
+      "translation": "."
+    },
+    {
+      "german": "doch",
+      "translation": "but"
+    },
+    {
+      "german": "klingt",
+      "translation": "Sounds"
+    },
+    {
+      "german": "schafft",
+      "translation": "Who scores"
+    },
+    {
+      "german": "schaffen",
+      "translation": "reflection"
     }
   ]
 }

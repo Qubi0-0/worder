@@ -1,3 +1,4 @@
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
@@ -33,6 +34,15 @@ impl Dictionary {
     pub fn save(&self) -> std::io::Result<()> {
         let data = serde_json::to_string_pretty(self)?;
         fs::write(&self.file_path, data)?;
+        Ok(())
+    }
+
+    pub fn export_json(&self) -> std::io::Result<()> {
+        let data = serde_json::to_string_pretty(self)?;
+        let date = Utc::now().format("%Y-%m-%d_%H-%M-%S");
+        fs::create_dir_all("out")?;
+        let target = format!("out/{}_exported.json", date);
+        fs::write(target, data)?;
         Ok(())
     }
 

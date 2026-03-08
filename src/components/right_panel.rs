@@ -9,6 +9,7 @@ pub struct RightPanel {
     pub entries: Vec<DictionaryEntry>,
     pub list_state: ListState,
     pub deleted_index: Option<usize>,
+    pub export_requested: bool,
 }
 
 impl RightPanel {
@@ -18,6 +19,7 @@ impl RightPanel {
             entries: Vec::new(),
             list_state: ListState::default(),
             deleted_index: None,
+            export_requested: false,
         }
     }
 }
@@ -84,6 +86,9 @@ impl Component for RightPanel {
                     {
                         self.deleted_index = Some(i);
                     }
+                }
+                KeyCode::Char('e') => {
+                    self.export_requested = true;
                 }
                 _ => {}
             }

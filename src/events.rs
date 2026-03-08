@@ -77,6 +77,14 @@ pub fn handle_event(app: &mut App, key: KeyEvent) -> io::Result<()> {
                     }
                 }
             }
+            // Check if export was requested
+            if app.right_panel.export_requested {
+                app.right_panel.export_requested = false;
+                match app.dictionary.export_json() {
+                    Ok(()) => app.left_panel.status = "✓ Exported to out/".to_string(),
+                    Err(e) => app.left_panel.status = format!("✗ Export error: {}", e),
+                }
+            }
         }
         FocusedPanel::TitleBar => app.title_bar.handle_key_event(key)?,
         FocusedPanel::StatusBar => app.status_bar.handle_key_event(key)?,
