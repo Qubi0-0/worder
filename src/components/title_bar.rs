@@ -9,7 +9,7 @@ pub struct TitleBar {
 
 impl TitleBar {
     pub fn new(fg_color: Color) -> Self {
-        Self { fg_color: fg_color }
+        Self { fg_color }
     }
 }
 

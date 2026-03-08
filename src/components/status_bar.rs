@@ -9,7 +9,7 @@ pub struct StatusBar {
 
 impl StatusBar {
     pub fn new(fg_color: Color) -> Self {
-        Self { fg_color: fg_color }
+        Self { fg_color }
     }
 }
 

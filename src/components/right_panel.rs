@@ -79,10 +79,10 @@ impl Component for RightPanel {
                     }
                 }
                 KeyCode::Char('d') | KeyCode::Delete => {
-                    if let Some(i) = self.list_state.selected() {
-                        if i < self.entries.len() {
-                            self.deleted_index = Some(i);
-                        }
+                    if let Some(i) = self.list_state.selected()
+                        && i < self.entries.len()
+                    {
+                        self.deleted_index = Some(i);
                     }
                 }
                 _ => {}

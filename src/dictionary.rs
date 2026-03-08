@@ -17,13 +17,12 @@ pub struct Dictionary {
 
 impl Dictionary {
     pub fn load(path: PathBuf) -> Self {
-        if path.exists() {
-            if let Ok(data) = fs::read_to_string(&path) {
-                if let Ok(mut dict) = serde_json::from_str::<Dictionary>(&data) {
-                    dict.file_path = path;
-                    return dict;
-                }
-            }
+        if path.exists()
+            && let Ok(data) = fs::read_to_string(&path)
+            && let Ok(mut dict) = serde_json::from_str::<Dictionary>(&data)
+        {
+            dict.file_path = path;
+            return dict;
         }
         Dictionary {
             entries: Vec::new(),
